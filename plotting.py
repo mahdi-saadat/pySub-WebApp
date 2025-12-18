@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 
 
 def plot_subsidence(X, Y, S):
-    fig, ax = plt.subplots(figsize=(7, 6))
+    fig, ax = plt.subplots(figsize=(10, 5))
 
     levels = 20
     contour = ax.contourf(X, Y, S, levels=levels)
