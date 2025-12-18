@@ -46,8 +46,6 @@ def get_subsidence_factor(calculated_ratio, hard_rock_percentage):
     # 4. Return the value
     return df.at[closest_ratio, closest_col]
 
-
-
 def calculate_subsidence(
     panel_width,
     panel_length,
@@ -75,7 +73,6 @@ def calculate_subsidence(
     # --- W/H ratio ---
     w_h = panel_width / depth_of_cover
     
-
     # --- Inflection distance logic (conservative, matches your code) ---
     if w_h >= 1.2:
         inflection = 0.2 * depth_of_cover
@@ -87,13 +84,10 @@ def calculate_subsidence(
             + 5.0921 * w_h
             - 0.0134
         )
-    
-    
     # Calculate the subsidence factor
     w_h_rat = round(panel_width / depth_of_cover, 1)
     hr_percentage = percentage_hard_rock/100
     subsidence_factor = get_subsidence_factor(w_h_rat,hr_percentage)
-    
     
     # --- Maximum subsidence ---
     S_max = -subsidence_factor * extraction_thickness

@@ -40,6 +40,10 @@ panel_length = st.number_input("Panel length (m)", 50.0, 5000.0, 1000.0)
 depth_of_cover = st.number_input("Depth of cover (m)", 50.0, 1000.0, 115.0)
 extraction_thickness = st.number_input("Extraction thickness (m)", 1.0, 10.0, 4.20)
 percentage_hard_rock = st.number_input("Hard Rock Percentage", 10.0, 100.0, 30.0)
+uploaded_dxf = st.file_uploader(
+    "Upload panel DXF",
+    type=["dxf"]
+)
 # -------------------------------------------------
 # Run model
 # -------------------------------------------------
