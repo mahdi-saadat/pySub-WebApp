@@ -10,6 +10,7 @@ import numpy as np
 from scipy.special import erf
 import pandas as pd
 
+
 def get_subsidence_factor(calculated_ratio, hard_rock_percentage):
     """
     Calculates W/h and retrieves the corresponding value from the table.
@@ -46,12 +47,17 @@ def get_subsidence_factor(calculated_ratio, hard_rock_percentage):
     # 4. Return the value
     return df.at[closest_ratio, closest_col]
 
+
+
+
 def calculate_subsidence(
     panel_width,
     panel_length,
     depth_of_cover,
     extraction_thickness,
     percentage_hard_rock,
+    uploaded_panel_dxf,
+    uploaded_parts_dxf,
     grid_points=200
 ):
     """
