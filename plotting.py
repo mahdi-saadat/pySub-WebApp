@@ -5,6 +5,8 @@ Created on Thu Dec 18 20:02:33 2025
 
 @author: Mahdi Saadat
 """
+import matplotlib
+matplotlib.use("Agg")  # REQUIRED for Streamlit Cloud
 
 import matplotlib.pyplot as plt
 
