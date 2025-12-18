@@ -39,7 +39,6 @@ panel_width = st.number_input("Panel width (m)", 50.0, 1000.0, 270.0)
 panel_length = st.number_input("Panel length (m)", 50.0, 5000.0, 1000.0)
 depth_of_cover = st.number_input("Depth of cover (m)", 50.0, 1000.0, 115.0)
 extraction_thickness = st.number_input("Extraction thickness (m)", 1.0, 10.0, 4.20)
-subsidence_factor = st.slider("Subsidence factor", 0.3, 1.0, 0.7)
 
 # -------------------------------------------------
 # Run model
@@ -52,7 +51,6 @@ if st.button("Run Subsidence Assessment"):
                 panel_length,
                 depth_of_cover,
                 extraction_thickness,
-                subsidence_factor
             )
 
             fig = plot_subsidence(X, Y, S)
