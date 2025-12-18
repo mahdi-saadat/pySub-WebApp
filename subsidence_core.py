@@ -53,6 +53,7 @@ def calculate_subsidence(
     panel_length,
     depth_of_cover,
     extraction_thickness,
+    percentage_hard_rock,
     grid_points=200
 ):
     """
@@ -90,7 +91,8 @@ def calculate_subsidence(
     
     # Calculate the subsidence factor
     w_h_rat = round(panel_width / depth_of_cover, 1)
-    subsidence_factor = get_subsidence_factor(w_h_rat,0.3)
+    hr_percentage = percentage_hard_rock/100
+    subsidence_factor = get_subsidence_factor(w_h_rat,hr_percentage)
     
     
     # --- Maximum subsidence ---
