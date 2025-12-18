@@ -68,6 +68,7 @@ if st.button("Run Subsidence Assessment"):
                 uploaded_panel_dxf,
                 uploaded_parts_dxf
             )
+            
 
             fig = plot_subsidence(X, Y, S)
             st.pyplot(fig)

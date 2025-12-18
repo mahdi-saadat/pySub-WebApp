@@ -11,6 +11,8 @@ from scipy.special import erf
 import pandas as pd
 
 
+
+
 def get_subsidence_factor(calculated_ratio, hard_rock_percentage):
     """
     Calculates W/h and retrieves the corresponding value from the table.
@@ -46,6 +48,161 @@ def get_subsidence_factor(calculated_ratio, hard_rock_percentage):
 
     # 4. Return the value
     return df.at[closest_ratio, closest_col]
+
+
+# #--------------------- Depth of Cover ----------------
+
+# """
+#     This depth of cover can be modified later
+# """
+# # Your initial data
+# data = [
+#     {
+#         "Panel ID": 1,
+#         "Panel ID LW": "LW03",
+#         "Start": 230,
+#         "End": 130,
+#         "Seam": "Seam A"
+#     }
+# ]
+
+# df_doc = pd.DataFrame(data)
+# #--------------------- End of Depth of Cover ----------------
+
+
+# # Define your grid points
+# grid_point = 10 
+
+# # Initialize your storage dictionary
+# gradient_dict = {}
+
+# def calculate_gradient(start, end, num_points=grid_point):
+#     return np.linspace(start, end, num_points)
+
+
+# # Populate the dictionary with gradients
+# for index, row in df_doc.iterrows():
+#     lw_id = row['Panel ID']
+#     gradient = calculate_gradient(row['Start'], row['End'])
+#     gradient_dict[lw_id] = gradient
+
+# # Dictionary to store inflection points with Panel ID as the key
+# inflection_points_dict = {}
+# for ip, (lw_id, igrad) in zip(range(len(all_panel_widths)), gradient_dict.items()):
+#     inflection_points_list = []
+#     current_panel_id = ip + 1
+#     current_row = df_doc[df_doc['Panel ID'] == current_panel_id]
+    
+#     if not current_row.empty:
+#         mystart = current_row['Start'].values[0]
+#         myend = current_row['End'].values[0]   
+#     else:
+#         #print(f"Panel ID {current_panel_id} not found in the dataframe.")
+#         continue  # Skip this panel if it isn't found
+    
+#     avg_doc = (mystart + myend) / 2
+    
+#     i_width = all_panel_widths[ip]
+#     w_h_ratio = round(i_width / avg_doc, 1)
+#     #print(f"Panel width: {i_width} , Average DOC: {avg_doc}, W/H Ratio: {w_h_ratio}, Panel_id: {lw_id}, Panel_id: {ip}")
+#     if w_h_ratio >= 1.2:
+        
+#         inf_point = igrad * 0.2
+#     else:
+#         inf_point = np.round(
+#             igrad * (-2.1702 * (w_h_ratio**4) + 7.2849 * (w_h_ratio**3) - 9.1824 * (w_h_ratio**2) + 5.3794 * w_h_ratio - 1.1308), 
+#             3
+#         )
+#     # Append inf_point to the list
+#     inflection_points_list.append(inf_point)
+#     # Store the list in the dictionary
+#     inflection_points_dict[lw_id] = inflection_points_list
+    
+#     print(f"W/h : {w_h_ratio}, Inflection Point: {inflection_points_list}")
+
+# beta_angle_dict = {}
+# major_influence_radius_dict = {}
+# m_to_ft = 3.28084  # meters to feet
+# ft_to_m = 0.3048   # feet to meters
+
+# doc_counter = 0
+# # Calculate beta_angle and major influence radius for each depth of cover
+# for panel_id, gradient in gradient_dict.items():
+#     major_influence_radius_list = []  # Initialize a new list for each panel ID
+#     # Calculate beta_angle (angle of major influence) in degrees
+#     gradient_ft = gradient * m_to_ft
+
+#     beta_angle = 58.89 + 0.03089 * gradient_ft - 0.0000184 * (gradient_ft ** 2)
+
+#     # Convert beta_angle from degrees to radians
+#     beta_angle_radians = np.radians(beta_angle)
+    
+#     # Store beta_angle value in the dictionary
+#     beta_angle_dict[doc_counter] = beta_angle
+    
+#     # Calculate major influence radius
+#     major_influence_radius = np.round(gradient / np.tan(beta_angle_radians), 2)
+#     major_influence_radius_list.append(major_influence_radius)
+#     # Store major influence radius in the dictionary
+#     major_influence_radius_dict[panel_id] = major_influence_radius_list
+#     doc_counter +=1
+
+
+# def calculate_subsidence(lw_panel_id, panel_width, panel_length, extraction_thick, percentage_hard_rock, depth_of_cover,grid_resolution=100):
+#     global my_panel_id
+#     my_panel_id = lw_panel_id
+#     myrow = df_doc[df_doc['Panel ID'] == my_panel_id]
+    
+#     #If the row exists, extract Start and End values
+#     if not myrow.empty:
+#         mystart = myrow['Start'].values[0]
+#         myend = myrow['End'].values[0]   
+#     else:
+#         print(f"Panel ID {my_panel_id} not found in the dataframe.")
+    
+#     average_depth_of_cover = (mystart+myend)/2
+    
+#     # Define buffers
+#     x_buffer = 100#0.85 * panel_length
+#     y_buffer = 100#1.5 * panel_width
+    
+#     # Define x and y ranges
+#     global x_values_limit
+#     global y_values_limit
+#     x_values_limit = np.linspace(0 - x_buffer, panel_length + x_buffer, grid_resolution)
+#     y_values_limit = np.linspace(0 - y_buffer, panel_width + y_buffer, grid_resolution)
+    
+
+#     w_h_rat = round(panel_width / average_depth_of_cover, 1)
+#     hr_percentage = percentage_hard_rock/100
+#     subsidence_factor = get_subsidence_factor(w_h_rat,hr_percentage)
+    
+#     # Calculate Smax, Maximum Subsidence [m]
+#     s_max = round(extraction_thick * subsidence_factor, 1)
+#     X, Y = np.meshgrid(x_values_limit, y_values_limit)
+#     Sxy = np.zeros_like(X)
+    
+#     inflection_point_list = inflection_points_dict[lw_panel_id]
+#     major_influence_radius_array = major_influence_radius_dict[lw_panel_id]
+    
+#     # Iterate over x and y values
+#     for i, x in enumerate(x_values_limit):
+#         inflection_point_to_edge_conservative = inflection_point_list[0][i]
+#         major_influence_radius = major_influence_radius_array[0][i]
+#         for j, y in enumerate(y_values_limit):
+            
+#             x = x_values_limit[i]
+#             y = y_values_limit[j]
+            
+#             Sxy[i, j] = -s_max * (
+#                 0.5 * (erf(np.sqrt(np.pi) * (inflection_point_to_edge_conservative - y) / major_influence_radius) +
+#                        erf(np.sqrt(np.pi) * (-panel_width + inflection_point_to_edge_conservative + y) / major_influence_radius))
+#             ) * (
+#                 0.5 * (erf(np.sqrt(np.pi) * (inflection_point_to_edge_conservative - x) / major_influence_radius) +
+#                        erf(np.sqrt(np.pi) * (-panel_length + inflection_point_to_edge_conservative + x) / major_influence_radius))
+#             )
+            
+#     return X, Y, Sxy
 
 
 
